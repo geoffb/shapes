@@ -10,9 +10,6 @@ Game.ActorDefs.Debris = {
 		me.speed = Game.util.randomRange(2, 12);
 		me.sprite.style.zIndex = 5;
 	},
-	actorCollide:function(me, actor, world) {
-		return false;
-	},
 	die:function(me, world) {
 		return false;
 	},
@@ -34,10 +31,6 @@ Game.ActorDefs.Hero = {
 	steps:5,
 	init:function(me) {
 		me.speed = 20;
-	},
-	actorCollide:function(me, actor, world) {
-		console.log('Hero got hit!');
-		return false;
 	},
 	die:function(me, world) {
 		world.spawning = false;
@@ -65,12 +58,6 @@ Game.ActorDefs.Projectile = {
 	die:function(me, world) {
 		return false;
 	},
-	actorCollide:function(me, actor, world) {
-		console.log('bullet hit something!');
-		// TODO: Need to be able to update the score from here (better way?)
-		world.killActor(world.getActorIndex(actor));
-		world.killActor(world.getActorIndex(me));
-	},
 	hitWall:function(me, hitv, world) {
 		var index = world.getActorIndex(me);
 		world.killActor(index);
@@ -89,9 +76,6 @@ Game.ActorDefs.EnemyPinky = {
 	steps:5,
 	init:function(me) {
 		me.speed = 4;
-	},
-	actorCollide:function(me, actor, world) {
-		return false;
 	},
 	hitWall:function(me, hitv, world) {
 		if (hitv.x !== 0) {
@@ -129,9 +113,6 @@ Game.ActorDefs.EnemyElDiablo = {
 	die:function(me, world) {
 		world.spawnActor(me, Game.ActorDefs.Debris, 4);
 	},
-	actorCollide:function(me, actor, world) {
-		return false;
-	},
 	hitWall:function(me, hitv) {
 		if (hitv.x !== 0) {
 			me.direction.x *= -1;
@@ -162,9 +143,6 @@ Game.ActorDefs.EnemyTracker = {
 	init:function(me) {
 		me.speed = Game.util.randomRange(3, 6);
 	},
-	actorCollide:function(me, actor, world) {
-		return false;
-	},
 	die:function(me, world) {
 		world.spawnActor(me, Game.ActorDefs.Debris, 8);
 	},
@@ -194,9 +172,6 @@ Game.ActorDefs.EnemyFlower = {
 	die:function(me, world) {
 		world.spawnActor(me, Game.ActorDefs.Debris, 8);
 	},
-	actorCollide:function(me, actor, world) {
-		return false;
-	},
 	hitWall:function(me, hitv) {
 		if (hitv.x !== 0) {
 			me.direction.x *= -1;
@@ -219,9 +194,6 @@ Game.ActorDefs.EnemyGhost = {
 	steps:5,
 	init:function(me) {
 		me.speed = 10;
-	},
-	actorCollide:function(me, actor, world) {
-		return false;
 	},
 	die:function(me, world) {
 		world.spawnActor(me, Game.ActorDefs.Debris, 8);
@@ -252,9 +224,6 @@ Game.ActorDefs.EnemyCoward = {
 	},
 	die:function(me, world) {
 		world.spawnActor(me, Game.ActorDefs.Debris, 8);
-	},
-	actorCollide:function(me, actor, world) {
-		return false;
 	},
 	hitWall:function(me, hitv) {
 		if (hitv.x !== 0) {
