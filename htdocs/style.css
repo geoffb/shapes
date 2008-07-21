@@ -1,0 +1,18 @@
+.hud {
+	position:absolute;
+	width:630px;
+	left:0;
+	bottom:0;
+	z-index:100;
+	color:#fff;
+	font-weight:bold;
+	font-family:sans-serif;
+	background:url(images/chrome/gray50.png);
+	padding:5px;
+	font-size:0.8em;
+}
+.hud .field {
+	margin-right:4em;
+}
+
+
