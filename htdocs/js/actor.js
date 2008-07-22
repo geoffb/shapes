@@ -12,11 +12,14 @@
 		if (this.def) {
 			this.spritev.x = this.def.spritex;
 			this.spritev.y = this.def.spritey;
-			this.def.init(this);
+			this.fire('init', null);
 		}
 		this.updateSprite();
 	};
 	var proto = G.Actor.prototype;
+	proto.getPoints = function() {
+		return (this.def.score) ? this.def.score: 0;
+	};
 	proto.updateSprite = function() {
 		this.sprite.style.backgroundPosition = -this.spritev.x + 'px ' + -this.spritev.y + 'px';
 		this.sprite.style.left = this.position.x + 'px';
@@ -44,6 +47,11 @@
 			}
 		}
 	};
+	
+	proto.fire = function(event_name, world) {
+		if (this.def[event_name]) { this.def[event_name](this, world); }
+	};
+	
 	proto.think = function(world) {
 		this.def.think(this, world);
 	};
@@ -53,5 +61,8 @@
 	};
 	proto.hitWall = function(hitv, world) {
 		this.def.hitWall(this, hitv, world);
+	};
+	proto.attack = function(world) {
+		this.def.attack(this, world);
 	};
 })();

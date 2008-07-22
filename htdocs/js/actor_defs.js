@@ -43,6 +43,9 @@ Game.ActorDefs.Hero = {
 	},
 	think:function(me, world) {
 		return false;
+	},
+	attack:function(me, world) {
+		
 	}
 };
 

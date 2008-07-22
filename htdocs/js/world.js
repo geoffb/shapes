@@ -1,7 +1,11 @@
 (function() {
-	Game.World = function() {
+	var G = Game;
+	var C = YAHOO.util.CustomEvent;
+	G.World = function() {
 		this.stage = null;
 		this.hero = null;
+		this.lives = 3;
+		this.points = 0;
 		this.actors = [];
 		this.spawns = [];
 		this.spawning = false;
@@ -10,8 +14,9 @@
 		this.initStage();
 		this.locationGrid = null;
 		this.locationGridSize = 32;
+		this.onScore = new C('score', this);
 	};
-	var proto = Game.World.prototype;
+	var proto = G.World.prototype;
 	proto.initStage = function() {
 		this.stage = document.getElementById('stage');
 		if (!this.stage) {
@@ -57,7 +62,7 @@
 	proto.killActor = function(actor_index) {
 		var actor = this.actors[actor_index];
 		if (actor !== null && actor !== undefined) {
-			if (actor.def.die) { actor.def.die(actor, this); }
+			actor.fire('die', this);
 			actor.alive = false;
 			this.stage.removeChild(actor.sprite);
 			// TODO: Figure out why using .splice() bugs out
@@ -112,6 +117,10 @@
 			if (a !== null && a.def.role === 'enemy') { this.killActor(x); }
 		}
 	};
+	proto.awardPoints = function(points) {
+		this.points += points;
+		this.onScore.fire(points);
+	};
 	proto.update = function(elapsed) {
 		this.initLocationGrid();
 		// Move each actor and place them in the collision grid
@@ -157,6 +166,7 @@
 				var bounds1 = actor1.getBounds();				
 				// Look through each of the 4 cells that this actor could be in and check collisions
 				for (var cx = 0; cx < 2; cx++) {
+					
 					for (var cy = 0; cy < 2; cy++) {
 						var ck = new Game.Vector(k.x + cx, k.y + cy);
 						if (typeof(hash[ck]) === 'undefined') { continue; }
@@ -170,7 +180,9 @@
 							if (actor1.def.role !== actor2.def.role) {
 								var bounds2 = actor2.getBounds();
 								if (bounds1.intersect(bounds2)) {
-									// TODO: score points
+									if (actor1.alive && actor2.alive) {
+										this.awardPoints(actor1.getPoints() + actor2.getPoints());
+									}
 									this.killActor(this.getActorIndex(actor1));
 									this.killActor(this.getActorIndex(actor2));
 									break;

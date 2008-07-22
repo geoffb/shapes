@@ -11,18 +11,29 @@ var Game = {};
 		this.y = y;
 	};
 	var proto = G.Vector.prototype;
+	
+	proto.magnitude = function() {
+		return Math.sqrt(this.x * this.x + this.y * this.y);
+	};
+	proto.normalize = function() {
+		var m = this.magnitude();
+		this.x /= m;
+		this.y /= m;
+	};
+	proto.reverse = function() {
+		this.x = -this.x;
+		this.y = -this.y;
+	};
+	
+	
 	proto.add = function(vector) {
 		return new G.Vector(this.x + vector.x, this.y + vector.y);
 	};
 	proto.sub = function(vector) {
 		return new G.Vector(this.x - vector.x, this.y - vector.y);
 	};
-	proto.normalize = function() {
-		var v = this.copy();
-		var len = Math.sqrt(v.x * v.x + v.y * v.y);
-		v.x /= len;
-		v.y /= len;
-		return v;
+	proto.length = function() {
+		return Math.sqrt(this.x * this.x + this.y * this.y);
 	};
 	proto.dotProduct = function(vector) {
 		return this.x * vector.x + this.y + vector.y;
@@ -76,39 +87,27 @@ var Game = {};
 	};
 })();
 
-Game.util = {};
-
-Game.util.addEventListener = function(el, evt, func) {
-	if (el.addEventListener) {
-		el.addEventListener(evt, func, true);
-	} else if (el.attachEvent) {
-		el.attachEvent('on' + evt, func);
-	} else {
-		// Failed to attach event!
-	}	
-};
-
-Game.util.randomRange = function(min, max) {
-	return Math.floor(Math.random() * ((max - min) + 1)) + min;
-};
-
-Game.util.chance = function(percent) {
-	var number = Game.util.randomRange(0, 100);
-	return number <= percent;
-};
-
-Game.util.randomDirection = function() {
-	var n = Game.util.randomRange(1, 8);
-	var v = new Game.Vector(0, 0);
-	switch (n) {
-		case 1: v.x = -1; v.y = -1; break;
-		case 2: v.x = 0; v.y = -1; break;
-		case 3: v.x = 1; v.y = -1; break;
-		case 4: v.x = 1; v.y = 0; break;
-		case 5: v.x = 1; v.y = 1; break;
-		case 6: v.x = 0; v.y = 1; break;
-		case 7: v.x = -1; v.y = 1; break;
-		case 8: v.x = -1; v.y = 0; break;
+Game.util = {
+	randomRange:function(min, max) {
+		return Math.floor(Math.random() * ((max - min) + 1)) + min;
+	},
+	chance:function(percent) {
+		var number = Game.util.randomRange(0, 100);
+		return number <= percent;
+	},
+	randomDirection:function() {
+		var n = Game.util.randomRange(1, 8);
+		var v = new Game.Vector(0, 0);
+		switch (n) {
+			case 1: v.x = -1; v.y = -1; break;
+			case 2: v.x = 0; v.y = -1; break;
+			case 3: v.x = 1; v.y = -1; break;
+			case 4: v.x = 1; v.y = 0; break;
+			case 5: v.x = 1; v.y = 1; break;
+			case 6: v.x = 0; v.y = 1; break;
+			case 7: v.x = -1; v.y = 1; break;
+			case 8: v.x = -1; v.y = 0; break;
+		}
+		return v;
 	}
-	return v;
 };

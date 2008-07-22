@@ -1,12 +1,11 @@
 (function() {
+	var G = Game;
 	Game.Engine = function() {
-		this.world = new Game.World();
-		this.world.initSpawns();
+		this.initWorld();
 		this.hud = new Game.HUD(this.world.stage);
 		this.last_update = 0;
-		this.lives = 3;
-		this.score = 0;
 		this.updateHUD();
+		this.initInput();
 	};
 	var proto = Game.Engine.prototype;
 	proto.getElapsed = function() {
@@ -17,13 +16,46 @@
 		this.last_update = t;
 		return elapsed;
 	};
-	proto.updateHUD = function() {
-		this.hud.updateLives(this.lives);
-		this.hud.updateScore(this.score);
+	proto.initWorld = function() {
+		this.world = new G.World();
+		this.world.initSpawns();
+		this.world.onScore.subscribe(this.onScore, this);
 	};
-	proto.addScore = function(points) {
-		this.score += points;
-		this.updateHUD();
+	proto.onScore = function(type, args, me) {
+		me.updateHUD();
+	};
+	proto.initInput = function() {
+		this.input = new Game.InputHandler(window, this.world.stage);
+		this.input.onKeyDown.subscribe(this.onKeyDown, this);
+		this.input.onKeyUp.subscribe(this.onKeyUp, this);
+		//this.input.onMouseDown.subscribe(this.onMouseDown, this);
+	};
+	proto.onKeyDown = function(type, args, me) {
+		var v = new Game.Vector(0, 0);
+		switch (args[0]) {
+			case 65: v.x += -1; break;
+			case 87: v.y += -1; break;
+			case 68: v.x += 1; break;
+			case 83: v.y += 1; break;
+		}
+		me.world.hero.changeDirection(v);
+	};
+	proto.onKeyUp = function(type, args, me) {
+		var v = new Game.Vector(0, 0);
+		switch (args[0]) {
+			case 65: v.x -= -1; break;
+			case 87: v.y -= -1; break;
+			case 68: v.x -= 1; break;
+			case 83: v.y -= 1; break;
+		}
+		me.world.hero.changeDirection(v);
+	};
+	proto.onMouseDown = function(type, args, me) {
+		me.world.hero.attack(me.world);
+	};
+	proto.updateHUD = function() {
+		this.hud.updateLives(this.world.lives);
+		this.hud.updateScore(this.world.points);
 	};
 	proto.animate = function() {
 		var len = this.world.actors.length;
@@ -40,62 +72,54 @@
 		var len = this.world.actors.length;
 		for (var x = 0; x < len; x++) {
 			var a = this.world.actors[x];
-			if (a !== null) { a.think(this.world); }
+			if (a !== null) { a.fire('think', this.world); }
 		}
 	};
 	proto.update = function() {
 		var elapsed = this.getElapsed();
 		this.world.update(elapsed);
+		if (this.input.mouse_down) {
+			var v = new Game.Vector(this.input.mouseX, this.input.mouseY);
+			v = v.sub(this.world.hero.position);
+			v.normalize();			
+
+			var p = this.world.makeActor(Game.ActorDefs.Projectile);
+			p.position = this.world.hero.position.copy();
+			p.direction = v;
+			p.show();
+			
+
+		}
+	};
+	proto.debug = function() {
+		var total_actors = 0;
+		var null_actors = 0;
+		for (var a in this.world.actors) {
+			total_actors++;
+			if (a = null) { null_actors++; }
+		}
+		console.clear();
+		console.log('Actors: ' + total_actors + ' [' + null_actors + ' null]');
 	};
 })();
 
-function keyDown(e) {
-	e.stopPropagation();
-	var v = new Game.Vector(0, 0);
-	switch (e.keyCode) {
-		case 37: v.x += -1; break;
-		case 38: v.y += -1; break;
-		case 39: v.x += 1; break;
-		case 40: v.y += 1; break;
-		case 32:
-			var b = engine.world.makeActor(Game.ActorDefs.Projectile);
-			b.position = hero.position.copy();
-			b.direction = hero.facing.copy();
-			b.speed = 40;
-			b.show();
-			break;
-	}
-	hero.changeDirection(v);
-}
 
-function keyUp(e) {
-	e.stopPropagation();
-	var v = new Game.Vector(0, 0);
-	switch (e.keyCode) {
-		case 37: v.x -= -1; break;
-		case 38: v.y -= -1; break;
-		case 39: v.x -= 1; break;
-		case 40: v.y -= 1; break;
-	}
-	hero.changeDirection(v);
-}
-
-var stage = document.getElementById('stage');
-var engine = new Game.Engine(stage);
+var engine = new Game.Engine();
 
 var hero = engine.world.makeActor(Game.ActorDefs.Hero);
 engine.world.centerActor(hero);
 hero.show();
 
-Game.util.addEventListener(window, 'keydown', keyDown);
-Game.util.addEventListener(window, 'keyup', keyUp);
+
 
 function spawner() { engine.world.spawn(); }
 function updater() { engine.update(); }
 function animator() { engine.animate(); }
 function thinker() { engine.think(); }
+function debug() { engine.debug(); }
 
 window.setInterval(spawner, 5000);
 window.setInterval(thinker, 250);
 window.setInterval(animator, 100);
 window.setInterval(updater, 25);
+//window.setInterval(debug, 3000);
