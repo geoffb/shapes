@@ -15,11 +15,17 @@
 			this.spritev.y = this.def.spritey;
 			this.fire('init', null);
 		}
-		this.updateSprite();
+		//this.updateSprite();
 	};
 	var proto = G.Actor.prototype;
 	proto.getPoints = function() {
 		return (this.def.score) ? this.def.score: 0;
+	};
+	proto.animate = function() {
+		if (this.def.steps > 0) {
+			this.spritev.x += 32;
+			if (this.spritev.x > ((this.def.steps * 32)) + this.def.spritex) { this.spritev.x = this.def.spritex; }
+		}
 	};
 	proto.updateSprite = function() {
 		var s = this.sprite.style;
@@ -49,22 +55,23 @@
 			}
 		}
 	};
-	
-	proto.fire = function(event_name, world) {
-		if (this.def[event_name]) { this.def[event_name](this, world); }
-	};
-	
-	proto.think = function(world) {
-		this.def.think(this, world);
-	};
 	proto.show = function() {
 		this.updateSprite();
 		this.sprite.style.display = '';
 	};
-	proto.hitWall = function(hitv, world) {
-		this.def.hitWall(this, hitv, world);
+	proto.fire = function(event_name, world) {
+		if (this.def[event_name]) { this.def[event_name](this, world); }
+	};
+	proto.think = function(world) {
+		this.fire('think', world);
 	};
 	proto.attack = function(world) {
-		this.def.attack(this, world);
+		this.fire('attack', world);
+	};
+	proto.die = function(world) {
+		this.fire('die', world);
+	};
+	proto.hitWall = function(hitv, world) {
+		if (this.def.hitWall) { this.def.hitWall(this, hitv, world); }
 	};
 })();

@@ -6,6 +6,7 @@
 		this.last_update = 0;
 		this.updateHUD();
 		this.initInput();
+		this.initHero();
 	};
 	var proto = Game.Engine.prototype;
 	proto.getElapsed = function() {
@@ -20,6 +21,11 @@
 		this.world = new G.World();
 		this.world.initSpawns();
 		this.world.onScore.subscribe(this.onScore, this);
+	};
+	proto.initHero = function() {
+		var hero = this.world.makeActor(Game.ActorDefs.Hero);
+		this.world.centerActor(hero);
+		hero.show();
 	};
 	proto.onScore = function(type, args, me) {
 		me.updateHUD();
@@ -59,17 +65,13 @@
 	};
 	proto.animate = function() {
 		for (var actor_id in this.world.actors) {
-			var actor = this.world.actors[actor_id];
-			if (actor.def.steps > 0) {
-				actor.spritev.x += 32;
-				if (actor.spritev.x > ((actor.def.steps * 32)) + actor.def.spritex) { actor.spritev.x = actor.def.spritex; }
-			}
+			this.world.actors[actor_id].animate();
 		}
 	};
 	proto.think = function() {
 		for (var actor_id in this.world.actors) {
 			var a = this.world.actors[actor_id];
-			if (a !== null) { a.fire('think', this.world); }
+			if (a !== null) { a.think(this.world); }
 		}
 	};
 	proto.update = function() {
@@ -78,8 +80,7 @@
 		if (this.input.mouse_down) {
 			var v = new Game.Vector(this.input.mouseX, this.input.mouseY);
 			v = v.sub(this.world.hero.position);
-			v.normalize();			
-
+			v.normalize();
 			var p = this.world.makeActor(Game.ActorDefs.Projectile);
 			p.position = this.world.hero.position.copy();
 			p.direction = v;
@@ -101,26 +102,8 @@
 	};
 })();
 
-
 var engine = new Game.Engine();
-
-var hero = engine.world.makeActor(Game.ActorDefs.Hero);
-engine.world.centerActor(hero);
-hero.show();
-
-
-
-function spawner() { engine.world.spawn(); }
-function updater() { engine.update(); }
-function animator() { engine.animate(); }
-function thinker() { engine.think(); }
-function debug() { engine.debug(); }
-
-window.setInterval(spawner, 5000);
-window.setInterval(thinker, 250);
-window.setInterval(animator, 100);
-//window.setInterval(updater, 50);
-//window.setInterval(debug, 3000);
-
-
-window.setInterval((function(){engine.update();}), 50)
+window.setInterval((function(){engine.world.spawn();}),1500);
+window.setInterval((function(){engine.think();}),250);
+window.setInterval((function(){engine.animate();}),100);
+window.setInterval((function(){engine.update();}),50)

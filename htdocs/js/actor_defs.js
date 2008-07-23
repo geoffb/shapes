@@ -8,18 +8,11 @@ Game.ActorDefs.Debris = {
 	steps:5,
 	init:function(me) {
 		me.speed = Game.util.randomRange(2, 12);
-		me.sprite.style.zIndex = 5;
-	},
-	die:function(me, world) {
-		return false;
 	},
 	hitWall:function(me, hitv, world) {
 		world.killActor(me.id);
 		return true;
 	},
-	think:function(me, world) {
-		return false;
-	}
 };
 
 Game.ActorDefs.Hero = {
@@ -57,16 +50,10 @@ Game.ActorDefs.Projectile = {
 	init:function(me) {
 		me.speed = 40;
 	},
-	die:function(me, world) {
-		return false;
-	},
 	hitWall:function(me, hitv, world) {
 		world.killActor(me.id);
 		return true;
 	},
-	think:function(me, world) {
-		return false;
-	}
 };
 
 Game.ActorDefs.EnemyPinky = {

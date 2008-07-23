@@ -67,7 +67,7 @@
 	proto.killActor = function(actor_index) {
 		var actor = this.actors[actor_index];
 		if (actor !== null && actor !== undefined) {
-			actor.fire('die', this);
+			actor.die(this);
 			actor.alive = false;
 			this.stage.removeChild(actor.sprite);
 			delete(this.actors[actor_index]);
