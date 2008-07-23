@@ -167,7 +167,6 @@
 			for (var a1 = 0; a1 < len; a1++) {
 				var actor1 = actors[a1];
 				if (actor1 === null) { continue; }
-				if (actor1 === this.hero) { continue; }
 				var bounds1 = actor1.getBounds();
 				// Look through each of the 4 cells that this actor could be in and check collisions
 				for (var cx = 0; cx < 2; cx++) {
@@ -181,7 +180,6 @@
 						for (var a2 = start; a2 < cell_len; a2++) {
 							var actor2 = actors[a2];
 							if (actor2 === null) { continue; }
-							if (actor2 === this.hero) { continue; }
 							if (actor1.def.role !== actor2.def.role) {
 								var bounds2 = actor2.getBounds();
 								if (bounds1.intersect(bounds2)) {

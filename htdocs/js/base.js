@@ -92,18 +92,8 @@ Game.util = {
 		return number <= percent;
 	},
 	randomDirection:function() {
-		var n = Game.util.randomRange(1, 8);
-		var v = new Game.Vector(0, 0);
-		switch (n) {
-			case 1: v.x = -1; v.y = -1; break;
-			case 2: v.x = 0; v.y = -1; break;
-			case 3: v.x = 1; v.y = -1; break;
-			case 4: v.x = 1; v.y = 0; break;
-			case 5: v.x = 1; v.y = 1; break;
-			case 6: v.x = 0; v.y = 1; break;
-			case 7: v.x = -1; v.y = 1; break;
-			case 8: v.x = -1; v.y = 0; break;
-		}
-		return v;
+		var x = (Math.random() * 2) + -1;
+		var y = (Math.random() * 2) + -1;
+		return new Game.Vector(x, y);		
 	}
 };

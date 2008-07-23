@@ -12,6 +12,8 @@
 		this.onKeyUp = new C('OnKeyUp', this);
 		this.onMouseDown = new C('OnMouseDown', this);
 		this.init();
+		this.mouseOffsetLeft = this.elMouse.offsetLeft;
+		this.mouseOffsetTop = this.elMouse.offsetTop;
 	};
 	var proto = G.InputHandler.prototype;
 	proto.init = function() {
@@ -22,8 +24,8 @@
 		E.on(this.elKeyboard, 'keyup', this.keyUp, null, this);
 	};
 	proto.setMouseXY = function(x, y) {
-		x -= this.elMouse.offsetLeft;
-		y -= this.elMouse.offsetTop;
+		x -= this.mouseOffsetLeft;
+		y -= this.mouseOffsetTop;
 		this.mouseX = x;
 		this.mouseY = y;
 	};

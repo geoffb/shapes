@@ -63,7 +63,6 @@
 			if (actor.def.steps > 0) {
 				actor.spritev.x += 32;
 				if (actor.spritev.x > ((actor.def.steps * 32)) + actor.def.spritex) { actor.spritev.x = actor.def.spritex; }
-				actor.updateSprite();
 			}
 		}
 	};
@@ -120,8 +119,8 @@ function debug() { engine.debug(); }
 window.setInterval(spawner, 5000);
 window.setInterval(thinker, 250);
 window.setInterval(animator, 100);
-//window.setInterval(updater, 25);
+//window.setInterval(updater, 50);
 //window.setInterval(debug, 3000);
 
 
-window.setInterval((function(){engine.update();}), 25)
+window.setInterval((function(){engine.update();}), 50)

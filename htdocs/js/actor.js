@@ -22,9 +22,10 @@
 		return (this.def.score) ? this.def.score: 0;
 	};
 	proto.updateSprite = function() {
-		this.sprite.style.backgroundPosition = -this.spritev.x + 'px ' + -this.spritev.y + 'px';
-		this.sprite.style.left = this.position.x + 'px';
-		this.sprite.style.top = this.position.y + 'px';
+		var s = this.sprite.style;
+		s.backgroundPosition = -this.spritev.x + 'px ' + -this.spritev.y + 'px';
+		s.left = this.position.x + 'px';
+		s.top = this.position.y + 'px';
 	};
 	proto.getBounds = function() {
 		// TODO: Magic numbers are bad
