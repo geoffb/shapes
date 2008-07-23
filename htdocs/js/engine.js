@@ -58,20 +58,18 @@
 		this.hud.updateScore(this.world.points);
 	};
 	proto.animate = function() {
-		var len = this.world.actors.length;
-		for (var x = 0; x < len; x++) {
-			var a = this.world.actors[x];
-			if (a !== null && a.def.steps > 0) {
-				a.spritev.x += 32;
-				if (a.spritev.x > ((a.def.steps * 32)) + a.def.spritex) { a.spritev.x = a.def.spritex; }
-				a.updateSprite();
+		for (var actor_id in this.world.actors) {
+			var actor = this.world.actors[actor_id];
+			if (actor.def.steps > 0) {
+				actor.spritev.x += 32;
+				if (actor.spritev.x > ((actor.def.steps * 32)) + actor.def.spritex) { actor.spritev.x = actor.def.spritex; }
+				actor.updateSprite();
 			}
 		}
 	};
 	proto.think = function() {
-		var len = this.world.actors.length;
-		for (var x = 0; x < len; x++) {
-			var a = this.world.actors[x];
+		for (var actor_id in this.world.actors) {
+			var a = this.world.actors[actor_id];
 			if (a !== null) { a.fire('think', this.world); }
 		}
 	};
@@ -95,11 +93,12 @@
 		var total_actors = 0;
 		var null_actors = 0;
 		for (var a in this.world.actors) {
+			var actor = this.world.actors[a];
 			total_actors++;
-			if (a = null) { null_actors++; }
+			if (actor === null) { null_actors++; }
 		}
-		console.clear();
-		console.log('Actors: ' + total_actors + ' [' + null_actors + ' null]');
+		console.log('=========>');
+		console.log('Actors: ' + total_actors + ' [' + null_actors + ' null] ' + (total_actors - null_actors) + ' Active!');
 	};
 })();
 
@@ -121,5 +120,8 @@ function debug() { engine.debug(); }
 window.setInterval(spawner, 5000);
 window.setInterval(thinker, 250);
 window.setInterval(animator, 100);
-window.setInterval(updater, 25);
+//window.setInterval(updater, 25);
 //window.setInterval(debug, 3000);
+
+
+window.setInterval((function(){engine.update();}), 25)

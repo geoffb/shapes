@@ -14,8 +14,7 @@ Game.ActorDefs.Debris = {
 		return false;
 	},
 	hitWall:function(me, hitv, world) {
-		var index = world.getActorIndex(me);
-		world.killActor(index);
+		world.killActor(me.id);
 		return true;
 	},
 	think:function(me, world) {
@@ -62,8 +61,7 @@ Game.ActorDefs.Projectile = {
 		return false;
 	},
 	hitWall:function(me, hitv, world) {
-		var index = world.getActorIndex(me);
-		world.killActor(index);
+		world.killActor(me.id);
 		return true;
 	},
 	think:function(me, world) {

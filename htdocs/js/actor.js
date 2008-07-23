@@ -1,6 +1,7 @@
 (function() {
 	var G = Game;
 	G.Actor = function(def, sprite) {
+		this.id = 0;
 		this.def = def;
 		this.sprite = sprite;
 		this.position = new G.Vector(0, 0);

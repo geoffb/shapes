@@ -1,3 +1,5 @@
+// TODO: Use Actor IDs as the key in the actors array
+
 (function() {
 	var G = Game;
 	var C = YAHOO.util.CustomEvent;
@@ -6,6 +8,7 @@
 		this.hero = null;
 		this.lives = 3;
 		this.points = 0;
+		this.actor_id_seed = 1;
 		this.actors = [];
 		this.spawns = [];
 		this.spawning = false;
@@ -47,7 +50,9 @@
 	proto.makeActor = function(def) {
 		var s = this.makeSprite();
 		var a = new Game.Actor(def, s);
-		this.actors.push(a);
+		a.id = 'actor' + this.actor_id_seed++;
+		//this.actors.push(a);
+		this.actors[a.id] = a;
 		if (def === Game.ActorDefs.Hero) { this.hero = a; }
 		return a;
 	};
@@ -65,8 +70,7 @@
 			actor.fire('die', this);
 			actor.alive = false;
 			this.stage.removeChild(actor.sprite);
-			// TODO: Figure out why using .splice() bugs out
-			this.actors[actor_index] = null;
+			delete(this.actors[actor_index]);
 		}
 	};
 	proto.getActorIndex = function(actor) {
@@ -163,10 +167,10 @@
 			for (var a1 = 0; a1 < len; a1++) {
 				var actor1 = actors[a1];
 				if (actor1 === null) { continue; }
-				var bounds1 = actor1.getBounds();				
+				if (actor1 === this.hero) { continue; }
+				var bounds1 = actor1.getBounds();
 				// Look through each of the 4 cells that this actor could be in and check collisions
 				for (var cx = 0; cx < 2; cx++) {
-					
 					for (var cy = 0; cy < 2; cy++) {
 						var ck = new Game.Vector(k.x + cx, k.y + cy);
 						if (typeof(hash[ck]) === 'undefined') { continue; }
@@ -177,14 +181,15 @@
 						for (var a2 = start; a2 < cell_len; a2++) {
 							var actor2 = actors[a2];
 							if (actor2 === null) { continue; }
+							if (actor2 === this.hero) { continue; }
 							if (actor1.def.role !== actor2.def.role) {
 								var bounds2 = actor2.getBounds();
 								if (bounds1.intersect(bounds2)) {
 									if (actor1.alive && actor2.alive) {
 										this.awardPoints(actor1.getPoints() + actor2.getPoints());
 									}
-									this.killActor(this.getActorIndex(actor1));
-									this.killActor(this.getActorIndex(actor2));
+									this.killActor(actor1.id);
+									this.killActor(actor2.id);
 									break;
 								}
 							}	

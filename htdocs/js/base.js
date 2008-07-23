@@ -11,7 +11,6 @@ var Game = {};
 		this.y = y;
 	};
 	var proto = G.Vector.prototype;
-	
 	proto.magnitude = function() {
 		return Math.sqrt(this.x * this.x + this.y * this.y);
 	};
@@ -31,9 +30,6 @@ var Game = {};
 	};
 	proto.sub = function(vector) {
 		return new G.Vector(this.x - vector.x, this.y - vector.y);
-	};
-	proto.length = function() {
-		return Math.sqrt(this.x * this.x + this.y * this.y);
 	};
 	proto.dotProduct = function(vector) {
 		return this.x * vector.x + this.y + vector.y;
