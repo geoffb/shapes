@@ -11,8 +11,7 @@ Game.ActorDefs.Debris = {
 	},
 	hitWall:function(me, hitv, world) {
 		world.killActor(me.id);
-		return true;
-	},
+	}
 };
 
 Game.ActorDefs.Hero = {
@@ -25,19 +24,7 @@ Game.ActorDefs.Hero = {
 		me.speed = 20;
 	},
 	die:function(me, world) {
-		world.spawning = false;
-		world.killAll();
-		world.spawnActor(me, Game.ActorDefs.Debris, 16);
-		return true;
-	},
-	hitWall:function(me, hitv, world) {
-		return false;
-	},
-	think:function(me, world) {
-		return false;
-	},
-	attack:function(me, world) {
-		
+		world.spawnActor(me, Game.ActorDefs.Debris, 20);
 	}
 };
 
@@ -52,8 +39,7 @@ Game.ActorDefs.Projectile = {
 	},
 	hitWall:function(me, hitv, world) {
 		world.killActor(me.id);
-		return true;
-	},
+	}
 };
 
 Game.ActorDefs.EnemyPinky = {
@@ -78,7 +64,7 @@ Game.ActorDefs.EnemyPinky = {
 	},
 	think:function(me, world) {
 		var p = world.hero.position;
-		if (me.position.within(125, p)) {
+		if (world.hero !== null && me.position.within(125, p)) {
 			me.speed = 8;
 			me.direction = me.position.chase(p);
 		} else {
@@ -99,7 +85,7 @@ Game.ActorDefs.EnemyElDiablo = {
 		me.speed = 12;
 	},
 	die:function(me, world) {
-		world.spawnActor(me, Game.ActorDefs.Debris, 4);
+		world.spawnActor(me, Game.ActorDefs.Debris, 2);
 	},
 	hitWall:function(me, hitv) {
 		if (hitv.x !== 0) {
@@ -111,7 +97,7 @@ Game.ActorDefs.EnemyElDiablo = {
 	},
 	think:function(me, world) {
 		var p = world.hero.position;
-		if (me.position.within(75, p)) {
+		if (world.hero !== null && me.position.within(75, p)) {
 			me.speed = 14;
 			me.direction = me.position.chase(p);
 		} else {
@@ -132,7 +118,7 @@ Game.ActorDefs.EnemyTracker = {
 		me.speed = Game.util.randomRange(3, 6);
 	},
 	die:function(me, world) {
-		world.spawnActor(me, Game.ActorDefs.Debris, 8);
+		world.spawnActor(me, Game.ActorDefs.Debris, 4);
 	},
 	hitWall:function(me, hitv) {
 		if (hitv.x !== 0) {
@@ -143,8 +129,10 @@ Game.ActorDefs.EnemyTracker = {
 		}
 	},
 	think:function(me, world) {
-		var p = world.hero.position;
-		me.direction = me.position.chase(p);
+		if (world.hero !== null) {
+			var p = world.hero.position;
+			me.direction = me.position.chase(p);
+		}
 	}
 };
 
@@ -158,7 +146,7 @@ Game.ActorDefs.EnemyFlower = {
 		me.speed = 10;
 	},
 	die:function(me, world) {
-		world.spawnActor(me, Game.ActorDefs.Debris, 8);
+		world.spawnActor(me, Game.ActorDefs.Debris, 4);
 	},
 	hitWall:function(me, hitv) {
 		if (hitv.x !== 0) {
@@ -184,7 +172,7 @@ Game.ActorDefs.EnemyGhost = {
 		me.speed = 10;
 	},
 	die:function(me, world) {
-		world.spawnActor(me, Game.ActorDefs.Debris, 8);
+		world.spawnActor(me, Game.ActorDefs.Debris, 4);
 	},
 	hitWall:function(me, hitv) {
 		if (hitv.x !== 0) {
@@ -211,7 +199,7 @@ Game.ActorDefs.EnemyCoward = {
 		me.speed = 12;
 	},
 	die:function(me, world) {
-		world.spawnActor(me, Game.ActorDefs.Debris, 8);
+		world.spawnActor(me, Game.ActorDefs.Debris, 4);
 	},
 	hitWall:function(me, hitv) {
 		if (hitv.x !== 0) {
@@ -223,7 +211,7 @@ Game.ActorDefs.EnemyCoward = {
 	},
 	think:function(me, world) {
 		var p = world.hero.position;
-		if (me.position.within(50, p)) {
+		if (world.hero !== null && me.position.within(50, p)) {
 			me.speed = 15;
 			me.direction = me.position.chase(p);
 		} else if (me.position.within(100, p)) {

@@ -1,4 +1,11 @@
-// TODO: Use Actor IDs as the key in the actors array
+// RESET
+	
+	// kill all actors
+	
+	// kill all actors without firing events and reset actor id seed
+	
+	
+
 
 (function() {
 	var G = Game;
@@ -6,9 +13,7 @@
 	G.World = function() {
 		this.stage = null;
 		this.hero = null;
-		this.lives = 3;
-		this.points = 0;
-		this.actor_id_seed = 1;
+		this.actor_id_seed;
 		this.actors = [];
 		this.spawns = [];
 		this.spawning = false;
@@ -17,9 +22,20 @@
 		this.initStage();
 		this.locationGrid = null;
 		this.locationGridSize = 32;
-		this.onScore = new C('score', this);
+		this.onActorCollide = new C('actorcollide', this);
+		this.clean();
+		this.setup();
 	};
 	var proto = G.World.prototype;
+	proto.clean = function() {
+		for (var k in this.actors) {
+			this.killActor(k, true);
+		}
+		this.actor_id_seed = 1;
+	};
+	proto.setup = function() {
+		this.initHero();
+	};
 	proto.initStage = function() {
 		this.stage = document.getElementById('stage');
 		if (!this.stage) {
@@ -35,6 +51,11 @@
 		var bg = Game.util.randomRange(1, 3);
 		s.backgroundImage = 'url(images/backgrounds/space' + bg + '.jpg)';
 	};
+	proto.initHero = function() {
+		var hero = this.makeActor(Game.ActorDefs.Hero);
+		this.centerActor(hero);
+		hero.show();
+	};
 	proto.makeSprite = function() {
 		var sprite = document.createElement('div');
 		var s = sprite.style;
@@ -47,11 +68,13 @@
 		this.stage.appendChild(sprite);
 		return sprite;
 	};
+	proto.getNewActorID = function() {
+		return 'actor' + this.actor_id_seed++;
+	};
 	proto.makeActor = function(def) {
 		var s = this.makeSprite();
 		var a = new Game.Actor(def, s);
-		a.id = 'actor' + this.actor_id_seed++;
-		//this.actors.push(a);
+		a.id = this.getNewActorID();
 		this.actors[a.id] = a;
 		if (def === Game.ActorDefs.Hero) { this.hero = a; }
 		return a;
@@ -64,12 +87,13 @@
 			actor.show();
 		}
 	};
-	proto.killActor = function(actor_index) {
+	proto.killActor = function(actor_index, supress_events) {
 		var actor = this.actors[actor_index];
 		if (actor !== null && actor !== undefined) {
-			actor.die(this);
+			if (supress_events !== true) { actor.die(this);	}
 			actor.alive = false;
 			this.stage.removeChild(actor.sprite);
+			this.actors[actor_index] = null;
 			delete(this.actors[actor_index]);
 		}
 	};
@@ -92,8 +116,6 @@
 		this.spawns[1] = new Game.Vector(this.width - 32, 0);
 		this.spawns[2] = new Game.Vector(0, this.height - 32);
 		this.spawns[3] = new Game.Vector(this.width - 32, this.height - 32);
-		this.spawning = true;
-		this.spawn();
 	};
 	proto.spawn = function() {
 		if (!this.spawning) { return false; }
@@ -120,10 +142,6 @@
 			var a = this.actors[x];
 			if (a !== null && a.def.role === 'enemy') { this.killActor(x); }
 		}
-	};
-	proto.awardPoints = function(points) {
-		this.points += points;
-		this.onScore.fire(points);
 	};
 	proto.update = function(elapsed) {
 		this.initLocationGrid();
@@ -180,17 +198,11 @@
 						for (var a2 = start; a2 < cell_len; a2++) {
 							var actor2 = actors[a2];
 							if (actor2 === null) { continue; }
-							if (actor1.def.role !== actor2.def.role) {
-								var bounds2 = actor2.getBounds();
-								if (bounds1.intersect(bounds2)) {
-									if (actor1.alive && actor2.alive) {
-										this.awardPoints(actor1.getPoints() + actor2.getPoints());
-									}
-									this.killActor(actor1.id);
-									this.killActor(actor2.id);
-									break;
-								}
-							}	
+							var bounds2 = actor2.getBounds();
+							if (bounds1.intersect(bounds2)) {
+								this.onActorCollide.fire(actor1, actor2);
+								break;
+							}
 						}
 					}
 				}				
