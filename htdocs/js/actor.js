@@ -33,9 +33,13 @@
 		s.left = this.position.x + 'px';
 		s.top = this.position.y + 'px';
 	};
-	proto.getBounds = function() {
+	proto.getBounds = function(rect) {
 		// TODO: Magic numbers are bad
-		return new G.Rect(this.position.x + 5, this.position.y + 5, 22, 22);
+		rect.x = this.position.x + 5;
+		rect.y = this.position.y + 5;
+		rect.w = 22;
+		rect.h = 22;
+		//return new G.Rect(this.position.x + 5, this.position.y + 5, 22, 22);
 	};
 	proto.getMove = function(elapsed) {
 		var distance = this.speed * (elapsed / 100);

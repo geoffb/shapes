@@ -177,6 +177,8 @@
 	};
 	proto.checkCollision = function() {
 		var hash = this.locationGrid;
+		var bounds1 = new Game.Rect(0, 0, 0, 0);
+		var bounds2 = new Game.Rect(0, 0, 0, 0);
 		// Check the grid for actor collisions
 		for (var k in hash) {
 			var actors = hash[k];
@@ -185,7 +187,7 @@
 			for (var a1 = 0; a1 < len; a1++) {
 				var actor1 = actors[a1];
 				if (actor1 === null) { continue; }
-				var bounds1 = actor1.getBounds();
+				actor1.getBounds(bounds1);
 				// Look through each of the 4 cells that this actor could be in and check collisions
 				for (var cx = 0; cx < 2; cx++) {
 					for (var cy = 0; cy < 2; cy++) {
@@ -198,7 +200,7 @@
 						for (var a2 = start; a2 < cell_len; a2++) {
 							var actor2 = actors[a2];
 							if (actor2 === null) { continue; }
-							var bounds2 = actor2.getBounds();
+							actor2.getBounds(bounds2);
 							if (bounds1.intersect(bounds2)) {
 								this.onActorCollide.fire(actor1, actor2);
 								break;
