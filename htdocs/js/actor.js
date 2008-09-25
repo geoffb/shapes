@@ -28,6 +28,7 @@
 		}
 	};
 	proto.updateSprite = function() {
+		// TODO: Improve the peformance of this function; it's taking ~30% of execution time so sayeth Firebug
 		var s = this.sprite.style;
 		s.backgroundPosition = -this.spritev.x + 'px ' + -this.spritev.y + 'px';
 		s.left = this.position.x + 'px';
@@ -39,7 +40,6 @@
 		rect.y = this.position.y + 5;
 		rect.w = 22;
 		rect.h = 22;
-		//return new G.Rect(this.position.x + 5, this.position.y + 5, 22, 22);
 	};
 	proto.getMove = function(elapsed) {
 		var distance = this.speed * (elapsed / 100);

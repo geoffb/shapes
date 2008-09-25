@@ -62,8 +62,8 @@
 				me.world.killActor(hid);
 				me.lives--;
 				me.updateHUD();
-				me.hud.displayText('noob', null, 30, 640, null, '#f00');
-				me.hud.displayText('press space to continue', null, 150, 640, null);
+				me.hud.displayText('you died', null, 30, 640, null, '#f00');
+				me.hud.displayText('reload the page to try again', null, 150, 640, null);
 				//me.world.clean();
 				//me.world.setup();
 				return;
@@ -128,7 +128,7 @@
 		// TODO: Move the shooting code somewhere else!
 		if (this.accept_input && this.input.mouse_down) {
 			var v = new Game.Vector(this.input.mouseX, this.input.mouseY);
-			v = v.sub(this.world.hero.position);
+			v = v.sub(this.world.hero.position.add(new G.Vector(16, 16)));
 			v.normalize();
 			var p = this.world.makeActor(Game.ActorDefs.Projectile);
 			p.position = this.world.hero.position.copy();
