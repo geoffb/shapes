@@ -2,6 +2,9 @@
 	var G = Game;
 	G.Actor = function(def, sprite) {
 		this.id = 0;
+		this.owner_id = null;
+		this.children = 0;
+		this.cooldown = 0;
 		this.def = def;
 		this.sprite = sprite;
 		this.position = new G.Vector(0, 0);

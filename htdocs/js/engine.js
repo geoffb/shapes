@@ -1,17 +1,3 @@
-// Engine sequence
-
-	// reset the world
-	
-	// 
-	
-
-
-// if an actor is an enemy killed by the player then assign the enemy's point value to the player
-// if an actor is the hero then decrement his lives and reset the level
-// if the hero has no lives left then show game over screen and allow rest of game
-
-// FIXME: Zombie actors are causing collisions after death! FIX!
-
 (function() {
 	var G = Game;
 	Game.Engine = function() {
@@ -19,9 +5,11 @@
 		this.hud = new Game.HUD(this.world.stage);
 		this.last_update = 0;
 		this.lives = 3;
+		this.bombs = 3;
 		this.score = 0;
 		this.updateHUD();
 		this.initInput();
+		//this.crosshair = null;
 		this.hud.displayText('press space to begin', null, 100, 640, null);
 		this.accept_input = false;
 		this.state = 'ready';
@@ -45,6 +33,13 @@
 		this.world = new G.World();
 		this.world.initSpawns();
 		this.world.onActorCollide.subscribe(this.onActorCollide, this);
+		this.crosshair = this.world.makeSprite();
+		//this.crosshair.id = 'crosshair';
+		this.crosshair.style.backgroundPosition = '-224px 0px';
+		this.crosshair.style.left = 0;
+		this.crosshair.style.top = 0;
+		this.crosshair.style.zIndex = 50;
+		this.crosshair.style.display = 'block';
 	};
 	proto.awardPoints = function(points) {
 		this.score += points;
@@ -82,6 +77,7 @@
 	proto.onKeyDown = function(type, args, me) {
 		if (me.state === 'ready' && args[0] === 32) {
 			me.startGame();
+			return;
 		}
 		if (!me.accept_input) { return; }
 		var v = new Game.Vector(0, 0);
@@ -90,6 +86,13 @@
 			case 87: v.y += -1; break;
 			case 68: v.x += 1; break;
 			case 83: v.y += 1; break;
+			case 32:
+				if (me.bombs > 0) {
+					me.bombs -= 1;
+					me.world.killAll();
+					me.updateHUD();
+				}
+				break;
 		}
 		me.world.hero.changeDirection(v);
 	};
@@ -110,6 +113,7 @@
 	proto.updateHUD = function() {
 		this.hud.updateLives(this.lives);
 		this.hud.updateScore(this.score);
+		this.hud.updateBombs(this.bombs);
 	};
 	proto.animate = function() {
 		for (var actor_id in this.world.actors) {
@@ -125,15 +129,24 @@
 	proto.update = function() {
 		var elapsed = this.getElapsed();
 		this.world.update(elapsed);
+		if (this.crosshair) {
+			this.crosshair.style.left = (this.input.mouseX - 16) + 'px';
+			this.crosshair.style.top = (this.input.mouseY - 16) + 'px';
+		}
 		// TODO: Move the shooting code somewhere else!
 		if (this.accept_input && this.input.mouse_down) {
-			var v = new Game.Vector(this.input.mouseX, this.input.mouseY);
-			v = v.sub(this.world.hero.position.add(new G.Vector(16, 16)));
-			v.normalize();
-			var p = this.world.makeActor(Game.ActorDefs.Projectile);
-			p.position = this.world.hero.position.copy();
-			p.direction = v;
-			p.show();
+			if (this.world.hero.cooldown === 0 && this.world.hero.children <= 20) {
+				this.world.hero.cooldown = 150;
+				var v = new Game.Vector(this.input.mouseX, this.input.mouseY);
+				v = v.sub(this.world.hero.position.add(new G.Vector(16, 16)));
+				v.normalize();
+				var p = this.world.makeActor(Game.ActorDefs.Projectile);
+				p.position = this.world.hero.position.copy();
+				p.direction = v;
+				p.owner_id = this.world.hero.id;
+				this.world.hero.children++;
+				p.show();
+			}
 		}
 	};
 })();

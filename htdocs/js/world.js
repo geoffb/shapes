@@ -1,12 +1,3 @@
-// RESET
-	
-	// kill all actors
-	
-	// kill all actors without firing events and reset actor id seed
-	
-	
-
-
 (function() {
 	var G = Game;
 	var C = YAHOO.util.CustomEvent;
@@ -90,11 +81,15 @@
 	proto.killActor = function(actor_index, supress_events) {
 		var actor = this.actors[actor_index];
 		if (actor !== null && actor !== undefined) {
+			var owner_id = actor.owner_id;
 			if (supress_events !== true) { actor.die(this);	}
 			actor.alive = false;
 			this.stage.removeChild(actor.sprite);
 			this.actors[actor_index] = null;
 			delete(this.actors[actor_index]);
+			if (owner_id !== null && this.actors[owner_id]) {
+				this.actors[owner_id].children -= 1;
+			}
 		}
 	};
 	proto.getActorIndex = function(actor) {
@@ -137,10 +132,9 @@
 		}
 	};
 	proto.killAll = function() {
-		var len = this.actors.length;
-		for (var x = 0; x < len; x++) {
-			var a = this.actors[x];
-			if (a !== null && a.def.role === 'enemy') { this.killActor(x); }
+		for (var a in this.actors) {
+			var actor = this.actors[a];
+			if (actor !== null && actor.def.role === 'enemy') { this.killActor(a); }
 		}
 	};
 	proto.update = function(elapsed) {
@@ -149,6 +143,13 @@
 		for (var a in this.actors) {
 			var actor = this.actors[a];
 			if (actor === null) { continue; }
+			if (actor.cooldown > 0) {
+				if (actor.cooldown - elapsed < 0) {
+					actor.cooldown = 0;
+				} else {
+					actor.cooldown -= elapsed;
+				}
+			}
 			var movement = actor.getMove(elapsed);
 			var position = actor.position.add(movement);
 			// TODO: Clean up wall hit detection

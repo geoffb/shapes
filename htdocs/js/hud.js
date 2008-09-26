@@ -7,13 +7,16 @@
 		this.init();
 		this.lives = D.get('hud_lives');
 		this.score = D.get('hud_score');
+		this.bombs = D.get('hud_bombs');
+		this.crosshair = null;
 	};
 	var proto = G.HUD.prototype;
 	proto.init = function() {
 		this.hud = document.createElement('div');
 		this.hud.className = 'hud';
-		this.hud.innerHTML += '<span class="field">Lives: <span id="hud_lives"></span></span>';
 		this.hud.innerHTML += '<span class="field">Score: <span id="hud_score"></span></span>';
+		this.hud.innerHTML += '<span class="field">Lives: <span id="hud_lives"></span></span>';
+		this.hud.innerHTML += '<span class="field">Bombs: <span id="hud_bombs"></span></span>';
 		this.stage.appendChild(this.hud);
 	}
 	proto.updateLives = function(number) {
@@ -21,6 +24,9 @@
 	};
 	proto.updateScore = function(number) {
 		this.score.innerHTML = number;
+	};
+	proto.updateBombs = function(number) {
+		this.bombs.innerHTML = number;
 	};
 	proto.displayText = function(text, x, y, w, h, color) {
 		var d = document.createElement('div');
