@@ -107,10 +107,10 @@
 	};
 	proto.initSpawns = function() {
 		// TODO: Don't hardocode spawn points
-		this.spawns[0] = new Game.Vector(0, 0);
-		this.spawns[1] = new Game.Vector(this.width - 32, 0);
-		this.spawns[2] = new Game.Vector(0, this.height - 32);
-		this.spawns[3] = new Game.Vector(this.width - 32, this.height - 32);
+		this.spawns[0] = new G.Vector(0, 0);
+		this.spawns[1] = new G.Vector(this.width - 32, 0);
+		this.spawns[2] = new G.Vector(0, this.height - 32);
+		this.spawns[3] = new G.Vector(this.width - 32, this.height - 32);
 	};
 	proto.spawn = function() {
 		if (!this.spawning) { return false; }
@@ -118,11 +118,11 @@
 		for (var x = 0; x < len; x++) {
 			var def = null;
 			switch (Game.util.randomRange(1, 5)) {
-				case 1: def = Game.ActorDefs.EnemyPinky; break;
-				case 2: def = Game.ActorDefs.EnemyTracker; break;
-				case 3: def = Game.ActorDefs.EnemyFlower; break;
-				case 4: def = Game.ActorDefs.EnemyCoward; break;
-				case 5: def = Game.ActorDefs.EnemyGhost; break;
+				case 1: def = G.ActorDefs.EnemyPinky; break;
+				case 2: def = G.ActorDefs.EnemyTracker; break;
+				case 3: def = G.ActorDefs.EnemyFlower; break;
+				case 4: def = G.ActorDefs.EnemyCoward; break;
+				case 5: def = G.ActorDefs.EnemyGhost; break;
 			}
 			var spawn = this.makeActor(def);
 			spawn.position = this.spawns[x].copy();

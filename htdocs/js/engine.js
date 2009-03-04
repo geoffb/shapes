@@ -9,7 +9,6 @@
 		this.score = 0;
 		this.updateHUD();
 		this.initInput();
-		//this.crosshair = null;
 		this.hud.displayText('press space to begin', null, 100, 640, null);
 		this.accept_input = false;
 		this.state = 'ready';
@@ -57,10 +56,18 @@
 				me.world.killActor(hid);
 				me.lives--;
 				me.updateHUD();
-				me.hud.displayText('you died', null, 30, 640, null, '#f00');
-				me.hud.displayText('reload the page to try again', null, 150, 640, null);
-				//me.world.clean();
-				//me.world.setup();
+				if (me.lives >= 1) {
+					var reset = function() {
+						me.world.killAll();
+						me.world.initHero();
+						me.world.spawning = true;
+						me.accept_input = true;
+					};
+					window.setTimeout(reset, 5000);
+				} else {
+					me.hud.displayText('game over', null, 30, 640, null, '#f00');
+					me.hud.displayText('reload the page to play again', null, 150, 640, null);
+				}
 				return;
 			}
 			me.awardPoints(actor1.getPoints() + actor2.getPoints());

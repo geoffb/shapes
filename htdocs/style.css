@@ -21,7 +21,10 @@ body {
 	margin-right:4em;
 }
 #stage {
-
+	cursor:crosshair;
+	background:#000;
+	width:640px;
+	height:480px;
 }
 #stage-wrapper {
 	float:left;
@@ -30,6 +33,15 @@ body {
 	float:left;
 	width:300px;
 	margin-left:20px;
+}
+.js-warning {
+	display:block;
+	margin:0 auto;
+	padding:1em;
+	color:red;
+	text-align:center;
+	font-weight:bold;
+	font-size:2em;
 }
 
 

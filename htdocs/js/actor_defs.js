@@ -64,7 +64,7 @@ Game.ActorDefs.EnemyPinky = {
 	},
 	think:function(me, world) {
 		var p = world.hero.position;
-		if (world.hero !== null && me.position.within(125, p)) {
+		if (typeof(world.hero) !== 'undefined' && me.position.within(125, p)) {
 			me.speed = 8;
 			me.direction = me.position.chase(p);
 		} else {
@@ -97,7 +97,7 @@ Game.ActorDefs.EnemyElDiablo = {
 	},
 	think:function(me, world) {
 		var p = world.hero.position;
-		if (world.hero !== null && me.position.within(75, p)) {
+		if (typeof(world.hero) !== 'undefined' && me.position.within(75, p)) {
 			me.speed = 14;
 			me.direction = me.position.chase(p);
 		} else {

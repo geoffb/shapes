@@ -18,7 +18,6 @@
 			this.spritev.y = this.def.spritey;
 			this.fire('init', null);
 		}
-		//this.updateSprite();
 	};
 	var proto = G.Actor.prototype;
 	proto.getPoints = function() {
@@ -31,11 +30,14 @@
 		}
 	};
 	proto.updateSprite = function() {
-		// TODO: Improve the peformance of this function; it's taking ~30% of execution time so sayeth Firebug
+		// TODO: Is there any way to improve the performance of this function?
 		var s = this.sprite.style;
-		s.backgroundPosition = -this.spritev.x + 'px ' + -this.spritev.y + 'px';
-		s.left = this.position.x + 'px';
-		s.top = this.position.y + 'px';
+		var pos_x = parseInt(this.position.x) + 'px';
+		var pos_y = parseInt(this.position.y) + 'px';
+		var pos_bg = -parseInt(this.spritev.x) + 'px ' + -parseInt(this.spritev.y) + 'px';
+		if (s.backgroundPosition !== pos_bg) { s.backgroundPosition = pos_bg; }
+		if (s.left !== pos_x) { s.left = pos_x; }
+		if (s.top !== pos_y) {s.top = pos_y; }
 	};
 	proto.getBounds = function(rect) {
 		// TODO: Magic numbers are bad
