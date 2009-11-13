@@ -4,6 +4,7 @@
 		this.initWorld();
 		this.hud = new Game.HUD(this.world.stage);
 		this.last_update = 0;
+		this.lag_threshold = 100;
 		this.lives = 3;
 		this.bombs = 3;
 		this.score = 0;
@@ -135,6 +136,14 @@
 	};
 	proto.update = function() {
 		var elapsed = this.getElapsed();
+		if (elapsed > this.lag_threshold) {
+			// Account for javascript lag here
+			// if it's been too long since the last
+			// update we don't want everything to warp
+			// across the screen due to time based modeling
+			// TODO: figure out if this really fucks with slower machines
+			return;
+		}
 		this.world.update(elapsed);
 		if (this.crosshair) {
 			this.crosshair.style.left = (this.input.mouseX - 16) + 'px';
