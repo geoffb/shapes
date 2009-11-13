@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="http://ns.adobe.com/air/application/1.5">
+    <id>com.mousepox.shapes</id>
+    <version>0.1</version>
+    <filename>Shapes</filename>
+    <initialWindow>
+        <content>htdocs/air.html</content>
+        <visible>true</visible>
+        <width>640</width>
+        <height>502</height> <!-- Game height is 480, 502 accounts for the title bar -->
+    </initialWindow>
+</application>
