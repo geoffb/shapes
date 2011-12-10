@@ -1,0 +1,47 @@
+body {
+	font-family:sans-serif;
+	background:#eee;
+	color:#333;
+}
+.hud {
+	position:absolute;
+	width:630px;
+	left:0;
+	bottom:0;
+	z-index:100;
+	color:#fff;
+	font-weight:bold;
+	font-family:sans-serif;
+	background:transparent url(images/chrome/gray50.png);
+	_background:#000;
+	padding:5px;
+	font-size:0.8em;
+}
+.hud .field {
+	margin-right:4em;
+}
+#stage {
+	cursor:crosshair;
+	background:#000;
+	width:640px;
+	height:480px;
+}
+#stage-wrapper {
+	float:left;
+}
+#info  {
+	float:left;
+	width:300px;
+	margin-left:20px;
+}
+.js-warning {
+	display:block;
+	margin:0 auto;
+	padding:1em;
+	color:red;
+	text-align:center;
+	font-weight:bold;
+	font-size:2em;
+}
+
+
