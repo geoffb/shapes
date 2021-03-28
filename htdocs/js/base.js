@@ -2,7 +2,7 @@
  * Namespace and basic objects
  */
 
-var Game = {};
+Game = {};
 
 (function() {
 	var G = Game;
@@ -23,8 +23,8 @@ var Game = {};
 		this.x = -this.x;
 		this.y = -this.y;
 	};
-	
-	
+
+
 	proto.add = function(vector) {
 		return new G.Vector(this.x + vector.x, this.y + vector.y);
 	};
@@ -71,9 +71,9 @@ var Game = {};
 	var proto = G.Rect.prototype;
 	proto.intersect = function(rect) {
 		return !(
-			this.x > (rect.x + rect.w) || 
-			(this.x + this.w) < rect.x || 
-			this.y > (rect.y + rect.h) || 
+			this.x > (rect.x + rect.w) ||
+			(this.x + this.w) < rect.x ||
+			this.y > (rect.y + rect.h) ||
 			(this.y + this.h) < rect.y
 		);
 	};
@@ -94,6 +94,6 @@ Game.util = {
 	randomDirection:function() {
 		var x = (Math.random() * 2) + -1;
 		var y = (Math.random() * 2) + -1;
-		return new Game.Vector(x, y);		
+		return new Game.Vector(x, y);
 	}
 };
